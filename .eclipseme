@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<eclipsemeMetadata version="1.8.0">
+<eclipsemeMetadata jad="AroundMe.jad" version="1.8.0">
    <device group="Nokia SDK 1.1 for Java" name="Nokia_SDK_1_1_Java"/>
    <signing signProject="false"/>
 </eclipsemeMetadata>

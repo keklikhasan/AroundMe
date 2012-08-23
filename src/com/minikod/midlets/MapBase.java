@@ -89,11 +89,6 @@ public class MapBase extends Base implements LocationListener {
 				"An error occoured while trying to get location");
 		ProcessGetLocation pgl = new ProcessGetLocation(this);
 		pgl.start();
-		/*
-		 * add buttons
-		 */
-		addCommand(SEARCH);
-		addCommand(LOOK);
 		Util.logI("add Updater");
 		map.addMapComponent(new Updater());
 	}
@@ -104,7 +99,8 @@ public class MapBase extends Base implements LocationListener {
 	public void setCurentLoc(Location currentLocation) {
 		this.curentLoc = currentLocation;
 		try {
-			if (map != null && mapFactory != null) {
+			if (map != null && mapFactory != null && curentLoc != null
+					&& curentLoc.getQualifiedCoordinates() != null) {
 				if (marker != null) {
 					map.removeMapObject(marker);
 				}
@@ -241,10 +237,13 @@ public class MapBase extends Base implements LocationListener {
 	 */
 	public void focus(GeoCoordinate loc, int ZOOM_LEVEL) {
 		try {
-			if (map != null)
+			if (map != null) {
+				Util.logI("ZOOM LEVEL set to "+ZOOM_LEVEL);
+				map.setZoomLevel(ZOOM_LEVEL, 0, 0);
 				map.setState(new MapDisplayState(new GeoCoordinate(loc
 						.getLatitude(), loc.getLongitude(), loc.getAltitude()),
-						ZOOM_LEVEL));
+						MY_MARKER_SIZE));
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			error("An error occoured while trying to set location detail : "
@@ -318,6 +317,7 @@ public class MapBase extends Base implements LocationListener {
 					 */
 					try {
 						Place pl = (Place) places.getPlaces().elementAt(0);
+						ZOOM_LEVEL = Util.zoomLevel(pl.getDistance());
 						focus(pl.getPosition().getCor(), ZOOM_LEVEL);
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -327,6 +327,8 @@ public class MapBase extends Base implements LocationListener {
 					/*
 					 * focus where we are
 					 */
+					Place pl = (Place) places.getPlaces().elementAt(places.getPlaces().size()-1);
+					ZOOM_LEVEL = Util.zoomLevel(pl.getDistance());
 					focus(new GeoCoordinate(curentLoc.getQualifiedCoordinates()
 							.getLatitude(), curentLoc.getQualifiedCoordinates()
 							.getLongitude(), curentLoc
